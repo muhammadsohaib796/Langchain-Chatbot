@@ -95,6 +95,8 @@ summary = ""
 
 MAX_MESSAGES = 6
 
+
+
 # ==========================================
 # 8. Fucntion
 # ==========================================
@@ -108,4 +110,18 @@ def ask_question(question: str) -> str:
     old_messages = history[:-MAX_MESSAGES]
     old_messages_text = "\n".join(old_messages)
 
-    
+    if old_messages:
+        summary = summary_chain.invoke({
+            "summary": summary,
+            "old_messages": old_messages_text
+    })
+    response = chat_chain.invoke({
+        "summary": summary,
+        "recent_messages": recent_messages_text,
+        "question": question
+    })
+
+    history.append(f"User: {question}")
+    history.append(f"AI: {response}")
+
+    return response
